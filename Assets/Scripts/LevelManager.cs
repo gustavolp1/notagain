@@ -18,7 +18,7 @@ public class LevelManager : MonoBehaviour
     {
         if (levelSelector != null)
         {
-            levelSelector.maxLevel = 1;
+            levelSelector.maxLevel = 11;
         }
         LoadLevel(currentLevel);
     }
@@ -26,6 +26,7 @@ public class LevelManager : MonoBehaviour
     public void LoadNextLevel()
     {
         ResetAllLights();
+        FindObjectOfType<PlayerRespawner>()?.ClearDeathMarker();
 
         int justCompletedLevel = currentLevel;
         currentLevel++;
@@ -36,7 +37,7 @@ public class LevelManager : MonoBehaviour
 
             if (levelSelector != null)
             {
-                levelSelector.maxLevel = Mathf.Clamp(highestLevelBeaten, 1, levelInfos.Count);
+                levelSelector.maxLevel = 11;
             }
         }
 
@@ -63,10 +64,18 @@ public class LevelManager : MonoBehaviour
             case 3: levelCondition = gameObject.AddComponent<Level3Condition>(); break;
             case 4: levelCondition = gameObject.AddComponent<Level4Condition>(); break;
             case 5: levelCondition = gameObject.AddComponent<Level5Condition>(); break;
+            case 6: levelCondition = gameObject.AddComponent<Level6Condition>(); break;
+            case 7: levelCondition = gameObject.AddComponent<Level7Condition>(); break;
+            case 8: levelCondition = gameObject.AddComponent<Level8Condition>(); break;
+            case 9: levelCondition = gameObject.AddComponent<Level9Condition>(); break;
+            case 10: levelCondition = gameObject.AddComponent<Level10Condition>(); break;
+            case 11: levelCondition = gameObject.AddComponent<Level11Condition>(); break;
+
             default:
                 Debug.Log("[LevelManager] No more levels. Restarting from 1.");
                 currentLevel = 1;
                 ResetAllLights();
+                FindObjectOfType<PlayerRespawner>()?.ClearDeathMarker();
                 levelCondition = gameObject.AddComponent<Level1Condition>();
                 break;
         }
@@ -113,5 +122,10 @@ public class LevelManager : MonoBehaviour
         {
             switchTrigger.ResetToOn();
         }
+    }
+
+    public int GetHighestLevelBeaten()
+    {
+        return highestLevelBeaten;
     }
 }

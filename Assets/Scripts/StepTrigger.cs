@@ -6,6 +6,8 @@ public class StepTrigger : MonoBehaviour
 {
     private GameObject buttonDefault;
     private GameObject buttonActive;
+    public AudioClip stepOnSound;
+    public AudioClip stepOffSound;
 
     private void Start()
     {
@@ -23,6 +25,7 @@ public class StepTrigger : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        AudioManager.Instance?.PlayOneShot(stepOnSound);
         if (other.CompareTag("Player"))
         {
             // Visual toggle to pressed state
@@ -36,6 +39,7 @@ public class StepTrigger : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
+        AudioManager.Instance?.PlayOneShot(stepOffSound);
         if (other.CompareTag("Player"))
         {
             // Return to normal state

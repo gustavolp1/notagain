@@ -7,6 +7,8 @@ public class AudioManager : MonoBehaviour
     public AudioClip backgroundMusic;
     public AudioSource musicSource;
 
+    public AudioSource sfxSource;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -31,9 +33,9 @@ public class AudioManager : MonoBehaviour
 
     public void PlayOneShot(AudioClip clip)
     {
-        if (clip != null)
+        if (clip != null && sfxSource != null)
         {
-            musicSource.PlayOneShot(clip);
+            sfxSource.PlayOneShot(clip);
         }
     }
 }

@@ -6,7 +6,7 @@ public class LevelSelector : MonoBehaviour
     public TextMeshProUGUI numberText;
     public int currentLevel = 1;
     public int minLevel = 1;
-    public int maxLevel = 1; // Initial max level
+    public int maxLevel = 11;
 
     public LevelManager levelManager;
 
@@ -32,8 +32,17 @@ public class LevelSelector : MonoBehaviour
     {
         if (levelManager != null)
         {
-            levelManager.ResetAllLights();
-            levelManager.LoadLevel(currentLevel);
+            int maxAllowedLevel = levelManager.GetHighestLevelBeaten();
+            if (currentLevel <= maxAllowedLevel)
+            {
+                levelManager.ResetAllLights();
+                levelManager.LoadLevel(currentLevel);
+                FindObjectOfType<PlayerRespawner>()?.ClearDeathMarker();
+            }
+            else
+            {
+                Debug.Log($"[LevelSelector] Level {currentLevel} is locked. Highest unlocked: {maxAllowedLevel}");
+            }
         }
     }
 
