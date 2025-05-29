@@ -9,6 +9,8 @@ public class StepTrigger : MonoBehaviour
     public AudioClip stepOnSound;
     public AudioClip stepOffSound;
 
+    private bool isPressed = false;
+
     private void Start()
     {
         Transform parent = transform.parent;
@@ -25,26 +27,41 @@ public class StepTrigger : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        AudioManager.Instance?.PlayOneShot(stepOnSound);
         if (other.CompareTag("Player"))
         {
-            // Visual toggle to pressed state
-            if (buttonDefault != null) buttonDefault.SetActive(false);
-            if (buttonActive != null) buttonActive.SetActive(true);
-
-            // Send interaction to level manager
+            ActivateButton();
             FindObjectOfType<LevelManager>()?.Interact(other.gameObject, "step");
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        AudioManager.Instance?.PlayOneShot(stepOffSound);
         if (other.CompareTag("Player"))
         {
-            // Return to normal state
-            if (buttonDefault != null) buttonDefault.SetActive(true);
-            if (buttonActive != null) buttonActive.SetActive(false);
+            DeactivateButton();
         }
+    }
+
+    // These methods can be called from anywhere, like Interact()
+    public void ActivateButton()
+    {
+        if (isPressed) return;
+        isPressed = true;
+
+        if (buttonDefault != null) buttonDefault.SetActive(false);
+        if (buttonActive != null) buttonActive.SetActive(true);
+
+        AudioManager.Instance?.PlayOneShot(stepOnSound);
+    }
+
+    public void DeactivateButton()
+    {
+        if (!isPressed) return;
+        isPressed = false;
+
+        if (buttonDefault != null) buttonDefault.SetActive(true);
+        if (buttonActive != null) buttonActive.SetActive(false);
+
+        AudioManager.Instance?.PlayOneShot(stepOffSound);
     }
 }

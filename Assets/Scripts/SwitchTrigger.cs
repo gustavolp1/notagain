@@ -60,4 +60,15 @@ public class SwitchTrigger : MonoBehaviour
         ApplyMaterial(brightMaterial);
         Debug.Log("[SwitchTrigger] Lighting reset to ON");
     }
+
+    public void SetToOff()
+    {
+        isOn = false;
+
+        if (lightingObject != null)
+            lightingObject.SetActive(false);
+
+        ApplyMaterial(darkMaterial);
+        Debug.Log("[SwitchTrigger] Lighting turned OFF");
+    }
 }

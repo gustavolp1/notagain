@@ -18,13 +18,20 @@ public class LevelManager : MonoBehaviour
     {
         if (levelSelector != null)
         {
-            levelSelector.maxLevel = 11;
+            levelSelector.maxLevel = 10;
         }
         LoadLevel(currentLevel);
     }
 
     public void LoadNextLevel()
     {
+        if (currentLevel == 10)
+        {
+            // Let Level10Condition handle the scene reload
+            Debug.Log("[LevelManager] Final level completed. Awaiting Level10Condition to reload scene.");
+            return;
+        }
+
         ResetAllLights();
         FindObjectOfType<PlayerRespawner>()?.ClearDeathMarker();
 
@@ -33,7 +40,7 @@ public class LevelManager : MonoBehaviour
 
         if (justCompletedLevel == highestLevelBeaten)
         {
-            highestLevelBeaten++; // unlock one more level
+            highestLevelBeaten++;
 
             if (levelSelector != null)
             {
@@ -68,8 +75,17 @@ public class LevelManager : MonoBehaviour
             case 7: levelCondition = gameObject.AddComponent<Level7Condition>(); break;
             case 8: levelCondition = gameObject.AddComponent<Level8Condition>(); break;
             case 9: levelCondition = gameObject.AddComponent<Level9Condition>(); break;
-            case 10: levelCondition = gameObject.AddComponent<Level10Condition>(); break;
-            case 11: levelCondition = gameObject.AddComponent<Level11Condition>(); break;
+            case 10:
+                GameObject controller = GameObject.Find("Level10Controller");
+                if (controller != null)
+                {
+                    levelCondition = controller.GetComponent<Level10Condition>();
+                }
+                else
+                {
+                    Debug.LogError("[LevelManager] Level10Controller GameObject not found.");
+                }
+                break;
 
             default:
                 Debug.Log("[LevelManager] No more levels. Restarting from 1.");
@@ -127,5 +143,10 @@ public class LevelManager : MonoBehaviour
     public int GetHighestLevelBeaten()
     {
         return highestLevelBeaten;
+    }
+
+    public int GetCurrentLevel()
+    {
+        return currentLevel;
     }
 }

@@ -38,4 +38,25 @@ public class AudioManager : MonoBehaviour
             sfxSource.PlayOneShot(clip);
         }
     }
+
+    private void OnEnable()
+    {
+        UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        UnityEngine.SceneManagement.SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(UnityEngine.SceneManagement.Scene scene, UnityEngine.SceneManagement.LoadSceneMode mode)
+    {
+        // Refresh AudioSources if needed here or clean up references
+        if (musicSource == null || sfxSource == null)
+        {
+            Debug.LogWarning("[AudioManager] AudioSources were lost during scene reload.");
+            // Optionally re-fetch if they're part of another GameObject:
+            musicSource = GameObject.Find("MusicSource")?.GetComponent<AudioSource>();
+        }
+    }
 }

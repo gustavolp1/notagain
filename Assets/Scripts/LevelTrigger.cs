@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LevelTrigger : MonoBehaviour
 {
@@ -12,7 +13,15 @@ public class LevelTrigger : MonoBehaviour
                 LevelManager levelManager = FindObjectOfType<LevelManager>();
                 if (levelManager != null)
                 {
-                    levelManager.LoadNextLevel();
+                    if (levelManager.GetCurrentLevel() == 10)
+                    {
+                        Debug.Log("[LevelTrigger] Level 10 complete. Reloading scene.");
+                        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                    }
+                    else
+                    {
+                        levelManager.LoadNextLevel();
+                    }
                 }
             }
             else

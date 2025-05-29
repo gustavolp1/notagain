@@ -6,7 +6,7 @@ public class LevelSelector : MonoBehaviour
     public TextMeshProUGUI numberText;
     public int currentLevel = 1;
     public int minLevel = 1;
-    public int maxLevel = 11;
+    public int maxLevel = 10;
 
     public LevelManager levelManager;
 
@@ -32,6 +32,18 @@ public class LevelSelector : MonoBehaviour
     {
         if (levelManager != null)
         {
+            // Special override for Level 8: use level selector as password input
+            if (levelManager.currentLevel == 8)
+            {
+                var level8 = FindObjectOfType<Level8Condition>();
+                if (level8 != null)
+                {
+                    level8.InputDigit(currentLevel);
+                    Debug.Log($"[LevelSelector] Input digit {currentLevel} for password.");
+                }
+                return;
+            }
+
             int maxAllowedLevel = levelManager.GetHighestLevelBeaten();
             if (currentLevel <= maxAllowedLevel)
             {

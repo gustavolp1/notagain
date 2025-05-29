@@ -5,19 +5,40 @@ using UnityEngine.XR.Interaction.Toolkit;
 public class PlaySoundOnSelect : MonoBehaviour
 {
     public AudioClip soundToPlay;
+    private UnityEngine.XR.Interaction.Toolkit.Interactables.XRBaseInteractable interactable;
+
+    private void Awake()
+    {
+        interactable = GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRBaseInteractable>();
+    }
 
     private void OnEnable()
     {
-        GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRBaseInteractable>().selectEntered.AddListener(OnSelect);
+        // Use delayed binding to ensure AudioManager is ready
+        StartCoroutine(DeferredBind());
     }
 
     private void OnDisable()
     {
-        GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRBaseInteractable>().selectEntered.RemoveListener(OnSelect);
+        if (interactable != null)
+            interactable.selectEntered.RemoveListener(OnSelect);
+    }
+
+    private System.Collections.IEnumerator DeferredBind()
+    {
+        yield return null; // Wait one frame to allow scene to finish loading
+        if (interactable != null)
+            interactable.selectEntered.AddListener(OnSelect);
     }
 
     private void OnSelect(SelectEnterEventArgs args)
     {
-        AudioManager.Instance?.PlayOneShot(soundToPlay);
+        if (AudioManager.Instance == null)
+        {
+            Debug.LogWarning("[PlaySoundOnSelect] AudioManager.Instance was null.");
+            return;
+        }
+
+        AudioManager.Instance.PlayOneShot(soundToPlay);
     }
 }
